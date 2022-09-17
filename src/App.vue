@@ -1,78 +1,47 @@
-<script >
-import SelectUsername from "./components/SelectUsername.vue";
-import Chat from "./components/Chat.vue";
-import socket from "./socket";
-
-export default {
-  name: "app",
-  components: {
-    Chat,
-    SelectUsername,
-  },
-  data() {
-    return {
-      usernameAlreadySelected: false,
-    };
-  },
-  methods: {
-    onUsernameSelection(username) {
-      this.usernameAlreadySelected = true;
-      socket.auth = { username };
-      socket.connect() //connect to http network, check the dev.tools network tab
-    }
-  },
-  created() {
-    //get session ID dari server
-    const sessionID = localStorage.getItem("sessionID");
-
-    if (sessionID) {
-      this.usernameAlreadySelected = true;
-      socket.auth = { sessionID }
-      socket.connect()
-    }
-
-    socket.on("session", ({ sessionID, userID }) => {
-      // Disimpan ID untuk reconnect
-      socket.auth = { sessionID }
-      //store ke localStorage
-      localStorage.setItem("sessionID", sessionID);
-      // update trus simpan ID user
-      socket.userID = userID
-    });
-
-    //error handling
-    socket.on("connect_error", (err) => {
-      if (err.message === "invalid username") {
-        this.usernameAlreadySelected = false;
-      }
-    });
-  },
-  //logout
-  destroyed() {
-    destroy.off('connect_error');
-  }
-};
+<script setup>
+import HelloWorld from './components/HelloWorld.vue'
+import TheWelcome from './components/TheWelcome.vue'
 </script>
 
 <template>
   <header>
-    <select-username v-if="!usernameAlreadySelected" @input="onUsernameSelection" />
-    <chat v-else />
+    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+
+    <div class="wrapper">
+      <HelloWorld msg="You did it!" />
+    </div>
   </header>
+
+  <main>
+    <TheWelcome />
+  </main>
 </template>
 
 <style scoped>
-body {
-  margin: 0;
+header {
+  line-height: 1.5;
 }
 
-@font-face {
-  font-family: Lato;
-  src: url("/fonts/Lato-Regular.ttf");
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
 }
 
-#app {
-  font-family: Lato, Arial, sans-serif;
-  font-size: 14px;
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
 }
 </style>

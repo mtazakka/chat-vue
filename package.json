@@ -1,5 +1,5 @@
 {
-  "name": "vue-app",
+  "name": "chat-app",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
   "dependencies": {
     "pinia": "^2.0.21",
     "socket.io": "^4.5.2",
+    "socket.io-client": "^4.5.2",
     "vue": "^3.2.38"
   },
   "devDependencies": {
