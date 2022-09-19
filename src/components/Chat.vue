@@ -131,82 +131,72 @@ export default {
     <div class="row gx-lg-5 align-items-center mb-5 justify-content-center">
       <div class="ol-lg-10 mb-5 mb-lg-0 position-relative" id="container">
         <div class="card shadow mb-4">
-          <table class="main-panel">
-            <thead>
-              <td class=" col-md-3" id="header-left-panel">
-                <h3>Contacts</h3>
-              </td>
-              <td class="col-md-9" id="header-main-panel">
-                <h3>sabil</h3>
-              </td>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="col-md-3" id="left-panel">
-                  <user v-for="user in users" :key="user.userID" :user="user" :selected="selectedUser === user"
-                    @select="onSelectUser(user)" />
-                </td>
-                <td rowspan="2" class="col-md-9" id="main-panel">
-                  <message-panel v-if="selectedUser" :user="selectedUser" @input="onMessage" />
-                </td>
-              </tr>
-              <tr>
-                <td id="logout-panel">
-                  <a href="#">
-                    <button type="button" class="btn btn-outline-danger">LOG OUT</button>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="container row g-3">
+            <div class="col-md-3" id="header-left-panel">
+              <h3>Contacts</h3>
+            </div>
+            <div class="col-md-9" id="header-main-panel">
+              <h3>sabil</h3>
+            </div>
+            <div class="col-md-3" id="left-panel">
+              <user v-for="user in users" :key="user.userID" :user="user" :selected="selectedUser === user"
+                @select="onSelectUser(user)" />
+            </div>
+            <div class="col-md-9" id="main-panel">
+              <message-panel v-if="selectedUser" :user="selectedUser" @input="onMessage" />
+            </div>
+            <div class="col-md-12" id="logout-panel">
+              <a href="#">
+                <button type="button" class="btn btn-outline-danger">LOG OUT</button>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
 </template>
 <style scoped>
 .container-fluid {
   margin-top: 20px;
-  width: 80%;
+  width: 70%;
 }
 
-.main-panel {
+.container {
   border: 10px solid white;
 }
 
 #header-left-panel {
-  vertical-align: middle;
+  padding-top: 25px;
   text-align: center;
   background-color: rgba(243, 243, 243, 0.982);
   height: 80px;
-}
-
-#left-panel {
-  height: 550px;
-  border: none;
-  background-color: rgba(243, 243, 243, 0.982);
-  border-top: 3px solid lightgrey;
-  vertical-align: top;
-}
-
-#logout-panel {
-  height: 70px;
-  vertical-align: top;
-  text-align: center;
-  background-color: rgba(243, 243, 243, 0.982);
+  border-radius: 10px 10px 0 0;
 }
 
 #header-main-panel {
   height: 80px;
   background-color: rgba(243, 243, 243, 0.982);
-  vertical-align: middle;
+  padding-top: 25px;
   text-align: center;
+  border-left: 20px white solid;
+
 }
 
-#main-panel {
-  max-height: 520px;
-  overflow-x: auto;
-  overflow-x: auto;
-  border: 3px solid rgba(243, 243, 243, 0.982);
+#left-panel {
+  margin-top: 0px;
+  height: 527px;
+  background-color: rgba(243, 243, 243, 0.982);
+  border-top: 3px solid lightgrey;
+  border-radius: 0 0 10px 10px;
+}
+
+#logout-panel {
+  margin-top: 2px;
+  padding-top: 0;
+  padding-left: 75px;
+  /* text-align: center; */
+  border: none;
 }
 </style>

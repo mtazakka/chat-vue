@@ -35,37 +35,91 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <div class="header">
-      <status-icon :connected="user.connected" />{{ user.username }}
+  <div class="card mb-4">
+    <div class="container row g-3 main-panel">
+      <!-- <div>
+        <status-icon :connected="user.connected" />{{ user.username }}
+      </div> -->
+      <div>
+        <ul class="messages">
+          <li v-for="(message, index) in user.messages" :key="index" class="message">
+            <div v-if="displaySender(message, index)" class="sender">
+              {{ message.fromSelf ? "(yourself)" : user.username }}
+            </div>
+            {{ message.content }}
+          </li>
+        </ul>
+      </div>
+      <div>
+        <form @submit.prevent="onSubmit" class="col-md-12">
+          <textarea v-model="submit" placeholder="Write a message..." class="input" />
+          <button :disabled="!isValid" class="send-button btn btn-primary">
+            <i class="fa-regular fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
     </div>
-
-    <ul class="messages">
-      <li v-for="(message, index) in user.messages" :key="index" class="message">
-        <div v-if="displaySender(message, index)" class="sender">
-          {{ message.fromSelf ? "(yourself)" : user.username }}
-        </div>
-        {{ message.content }}
-      </li>
-    </ul>
-
-    <form @submit.prevent="onSubmit" class="form">
-      <textarea v-model="input" placeholder="Your message..." class="input" />
-      <button :disabled="!isValid" class="send-button">Send</button>
-    </form>
+    <!-- <table class="main-panel">
+      <thead>
+        <tr>
+          <th>
+            <status-icon :connected="user.connected" />{{ user.username }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="message-panel">
+          <td>
+            <ul class="messages">
+              <li v-for="(message, index) in user.messages" :key="index" class="message">
+                <div v-if="displaySender(message, index)" class="sender">
+                  {{ message.fromSelf ? "(yourself)" : user.username }}
+                </div>
+                {{ message.content }}
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <br>
+        <tr>
+          <td id="write-panel">
+            <form @submit.prevent="onSubmit" class="col-md-12">
+              <textarea v-model="submit" placeholder="Write a message..." class="input" />
+              <button :disabled="!isValid" class="send-button btn btn-primary">
+                <i class="fa-regular fa-paper-plane"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
   </div>
 </template>
 <style scoped>
-.header {
+/* .header {
   line-height: 40px;
   padding: 10px 20px;
   border-bottom: 1px solid #dddddd;
+} */
+
+.card {
+  border: none;
+}
+
+.main-panel {
+  margin-top: 5px;
+  margin-left: 10px;
+  border: 3px solid rgba(243, 243, 243, 0.982);
+  margin-bottom: -22px;
 }
 
 .messages {
-  margin: 0;
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: scroll;
+  height: 400px;
 }
+
 
 .message {
   list-style: none;
@@ -76,20 +130,21 @@ export default {
   margin-top: 5px;
 }
 
-.form {
-  padding: 10px;
-}
 
 .input {
-  width: 80%;
+  width: 85%;
   resize: none;
-  padding: 10px;
-  line-height: 1.5;
-  border-radius: 5px;
-  border: 1px solid #000;
+  padding-top: 12px;
+  padding-left: 20px;
+  margin-left: 20px;
+  line-height: 1;
+  border-radius: 25px;
+  border: 1px solid lightgray;
 }
 
 .send-button {
   vertical-align: top;
+  border-radius: 50%;
+  margin-left: 10px;
 }
 </style>

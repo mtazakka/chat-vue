@@ -15,6 +15,7 @@ export default {
     };
   },
   methods: {
+    //ketika form di submit, dapet auth. baru bisa masuk
     onUsernameSelection(username) {
       this.usernameAlreadySelected = true;
       socket.auth = { username };
@@ -22,29 +23,31 @@ export default {
     },
   },
   created() {
-    const sessionID = localStorage.getItem("sessionID");
+    //   const sessionID = localStorage.getItem("sessionID");
 
-    if (sessionID) {
-      this.usernameAlreadySelected = true;
-      socket.auth = { sessionID };
-      socket.connect();
-    }
+    //   if (sessionID) {
+    //     this.usernameAlreadySelected = true;
+    //     socket.auth = { sessionID };
+    //     socket.connect();
+    //   }
 
-    socket.on("session", ({ sessionID, userID }) => {
-      // attach the session ID to the next reconnection attempts
-      socket.auth = { sessionID };
-      // store it in the localStorage
-      localStorage.setItem("sessionID", sessionID);
-      // save the ID of the user
-      socket.userID = userID;
-    });
+    //   socket.on("session", ({ sessionID, userID }) => {
+    //     // attach the session ID to the next reconnection attempts
+    //     socket.auth = { sessionID };
+    //     // store it in the localStorage
+    //     localStorage.setItem("sessionID", sessionID);
+    //     // save the ID of the user
+    //     socket.userID = userID;
+    //   });
 
+    //error handle untuk di low level dan middlewhere
     socket.on("connect_error", (err) => {
       if (err.message === "invalid username") {
         this.usernameAlreadySelected = false;
       }
     });
   },
+  //hook user handler destroy
   destroyed() {
     socket.off("connect_error");
   },

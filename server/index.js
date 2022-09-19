@@ -1,7 +1,7 @@
 const httpServer = require("http").createServer();
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: "http://localhost:5173",
   },
 });
 
@@ -14,6 +14,7 @@ const sessionStore = new InMemorySessionStore();
 const { InMemoryMessageStore } = require("./messageStore");
 const messageStore = new InMemoryMessageStore();
 
+//middlewhere  nyimpen sesiion pas login, agar tidak relog trus
 io.use((socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
   if (sessionID) {
@@ -43,7 +44,7 @@ io.on("connection", (socket) => {
     connected: true,
   });
 
-  // emit session details
+//   // emit session details
   socket.emit("session", {
     sessionID: socket.sessionID,
     userID: socket.userID,
