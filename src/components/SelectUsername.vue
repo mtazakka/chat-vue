@@ -1,19 +1,22 @@
 <script>
+import { ref } from "vue";
 export default {
   name: "SelectUsername",
+  emits: ["submit"],
   data() {
     return {
-      username: "",
+      username: ref(""),
     };
   },
   computed: {
     isValid() {
-      return this.username.length > 2;
+      return this.username.length >= 4;
     },
   },
   methods: {
     onSubmit() {
-      this.$emit("input", this.username);
+      console.log(this.username)
+      this.$emit("submit", this.username);
     },
   },
 };

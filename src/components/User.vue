@@ -3,6 +3,7 @@ import StatusIcon from "./StatusIcon.vue";
 export default {
   name: "User",
   components: { StatusIcon },
+  // emits: ["select"],
   props: {
     user: Object,
     selected: Boolean,
@@ -24,7 +25,7 @@ export default {
   <div class="user" @click="onClick" :class="{ selected: selected }">
     <div class="description">
       <div class="name">
-        {{ user.username }} {{ user.self ? " (yourself)" : "" }}
+        {{ user.username }} {{ user.self ? " (me)" : "" }}
       </div>
       <div class="status">
         <status-icon :connected="user.connected" />{{ status }}
