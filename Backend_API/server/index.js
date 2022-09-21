@@ -13,6 +13,7 @@ import indexRouter from "./routes/index.js";
 import userRouter from "./routes/user.js";
 import chatRoomRouter from "./routes/chatRoom.js";
 import deleteRouter from "./routes/delete.js";
+import chatRouter from "./routes/chat.js";
 // middlewares
 import { decode } from './middlewares/jwt.js'
 
@@ -28,7 +29,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
-app.use("/room", decode, chatRoomRouter);
+app.use("/room", chatRoomRouter);
+app.use("/chat", chatRouter);
 app.use("/delete", deleteRouter);
 
 /** catch 404 and forward to error handler */

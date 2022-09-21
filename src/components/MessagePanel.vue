@@ -1,52 +1,3 @@
-<!-- <script>
-import { useStore } from "../stores/piniaChat.js"
-import StatusIcon from "./StatusIcon.vue";
-
-export default {
-  name: "MessagePanel",
-  emits: ["input", "delete", "resend"],
-  setup() {
-    const Chat = useStore();
-    return { Chat };
-  },
-  components: {
-    StatusIcon,
-  },
-  props: {
-    user: Object,
-  },
-  data() {
-    return {
-      input: "",
-      bdelete: false,
-    };
-  },
-  methods: {
-    onSubmit() {
-      this.$emit("input", this.input);
-      this.input = "";
-    },
-    deleteChat(message, index) {
-      this.$emit("delete", message, index);
-    },
-    resendChat(message) {
-      this.$emit("resend", message)
-    },
-    displaySender(message, index) {
-      return (
-        index === 0 ||
-        this.user.messages[index - 1].fromSelf !==
-        this.user.messages[index].fromSelf
-      );
-    },
-  },
-  computed: {
-    isValid() {
-      return this.input.length > 0;
-    },
-  },
-};
-</script> -->
 <script>
 import { useChatStore } from "../stores/chat";
 import StatusIcon from "./StatusIcon.vue";
@@ -117,6 +68,10 @@ export default {
               </div>
               <br>
               {{ message.content }}
+              <button v-if="!message.sent && message.fromSelf" type="button" class="btn btn-outline-warning btn-sm"
+                id="resend" @click="resend(message)">&#x21bb</button>
+              <div v-if="message.fromSelf && !message.sent">
+              </div>
             </div>
 
             <div v-else class="receiver">
@@ -216,5 +171,14 @@ export default {
   vertical-align: top;
   border-radius: 50%;
   margin-left: 10px;
+}
+
+#resend {
+  margin-left: 10px;
+  margin-top: -5px;
+  border-radius: 25px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 18px;
 }
 </style>

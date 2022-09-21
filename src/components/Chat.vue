@@ -204,7 +204,7 @@ export default {
       }
     });
   },
-  unmounted() {
+  destroyed() {
     socket.off("connect");
     socket.off("disconnect");
     socket.off("users");
