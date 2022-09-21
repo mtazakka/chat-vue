@@ -1,5 +1,6 @@
 <script>
 import { ref } from "vue";
+
 export default {
   name: "SelectUsername",
   emits: ["submit"],
@@ -15,8 +16,8 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log(this.username)
       this.$emit("submit", this.username);
+      this.username = "";
     },
   },
 };
@@ -30,11 +31,9 @@ export default {
             <form @submit.prevent="onSubmit">
               <h1 style="color: green; text-align: center; margin-top:-5% ;">LOGIN</h1>
               <hr>
-              <!-- Email input -->
               <div class="form-outline mb-4">
                 <input v-model="username" class="form-control" placeholder="Username..." />
               </div>
-              <!-- Submit button -->
               <div class="text-center" style=" margin-bottom: -5%;">
                 <button type="submit" class="btn btn-primary btn-block mb-3" style="width:60%;" :disabled="!isValid">
                   LOG IN

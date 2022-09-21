@@ -1,35 +1,111 @@
 <script>
+import { useStore } from "../stores/piniaChat";
 import socket from "../socket";
 import User from "./User.vue";
 import MessagePanel from "./MessagePanel.vue";
 
 export default {
-  name: "Chat",
+  name: "ComponentChat",
+  emits: ["logOut"],
+  setup() {
+    const Chat = useStore();
+    return { Chat };
+  },
   components: { User, MessagePanel },
   data() {
     return {
       selectedUser: null,
       users: [],
+      count: 0,
     };
   },
   methods: {
     onMessage(content) {
+      const id = Date.now();
+      const date = new Date().toLocaleTimeString();
+      const to = this.selectedUser.userID;
       if (this.selectedUser) {
-        socket.emit("private message", {
-          content,
-          to: this.selectedUser.userID,
-        });
-        this.selectedUser.messages.push({
-          content,
-          fromSelf: true,
-        });
+        if (socket.connected) {
+          this.Chat.addChat(id, content, date, to);
+          this.selectedUser.messages.push({
+            id,
+            content,
+            date,
+            fromSelf: true,
+            sent: true,
+          });
+        } else {
+          this.selectedUser.messages.push({
+            id,
+            content,
+            date,
+            fromSelf: true,
+            sent: false,
+          });
+        }
       }
     },
     onSelectUser(user) {
       this.selectedUser = user;
       user.hasNewMessages = false;
     },
+    logOut() {
+      socket.on("user disconnected", (id) => {
+        for (let i = 0; i < this.users.length; i++) {
+          const user = this.users[i];
+          if (user.userID === id) {
+            user.connected = false;
+            break;
+          }
+        }
+      });
+      this.$emit("logOut");
+    },
+    // deleteChat(messageDel, msgindx) {
+    //   console.log("onMesag", messageDel);
+    //   const to = this.selectedUser.userID;
+    //   const msgdelid = messageDel.id;
+    //   if (this.selectedUser) {
+    //     this.Chat.removeChat(msgdelid, to, msgindx);
+    //     this.selectedUser.messages = this.selectedUser.messages.filter(
+    //       (item) => {
+    //         if (item.id != msgdelid) {
+    //           return item;
+    //         }
+    //       }
+    //     );
+    //   }
+    // },
+
+    // resendChat(msgResend) {
+    //   console.log("resendChat", msgResend);
+    //   const id = msgResend.id;
+    //   const content = msgResend.content;
+    //   const date = msgResend.date;
+    //   const to = this.selectedUser.userID;
+    //   if (this.selectedUser) {
+    //     if (socket.connected) {
+    //       console.log("ada koneksi resend");
+    //       this.Chat.addChat(id, content, date, to);
+    //       this.selectedUser.messages.map((item) => {
+    //         if (item.id == id) {
+    //           item.sent = true;
+    //         }
+    //         return item;
+    //       });
+    //     } else {
+    //       console.log("tidak ada koneksi resend");
+    //       this.selectedUser.messages.map((item) => {
+    //         if (item.id == id) {
+    //           item.sent = false;
+    //         }
+    //         return item;
+    //       });
+    //     }
+    //   }
+    // },
   },
+
   created() {
     socket.on("connect", () => {
       this.users.forEach((user) => {
@@ -51,7 +127,9 @@ export default {
       user.hasNewMessages = false;
     };
 
-    socket.on("users", (users) => {
+    //users handle
+    //make socket.once so that resend work
+    socket.once("users", (users) => {
       users.forEach((user) => {
         user.messages.forEach((message) => {
           message.fromSelf = message.from === socket.userID;
@@ -68,7 +146,6 @@ export default {
         initReactiveProperties(user);
         this.users.push(user);
       });
-      // put the current user first, and sort by username
       this.users.sort((a, b) => {
         if (a.self) return -1;
         if (b.self) return 1;
@@ -76,6 +153,7 @@ export default {
         return a.username > b.username ? 1 : 0;
       });
     });
+
 
     socket.on("user connected", (user) => {
       for (let i = 0; i < this.users.length; i++) {
@@ -89,24 +167,17 @@ export default {
       this.users.push(user);
     });
 
-    socket.on("user disconnected", (id) => {
-      for (let i = 0; i < this.users.length; i++) {
-        const user = this.users[i];
-        if (user.userID === id) {
-          user.connected = false;
-          break;
-        }
-      }
-    });
-
-    socket.on("private message", ({ content, from, to }) => {
+    socket.on("private message", ({ id, content, date, from, to, sent }) => {
       for (let i = 0; i < this.users.length; i++) {
         const user = this.users[i];
         const fromSelf = socket.userID === from;
         if (user.userID === (fromSelf ? to : from)) {
           user.messages.push({
+            id,
             content,
+            date,
             fromSelf,
+            sent,
           });
           if (user !== this.selectedUser) {
             user.hasNewMessages = true;
@@ -115,6 +186,24 @@ export default {
         }
       }
     });
+
+    // socket.on("delete message", ({ to, from, msgindx }) => {
+    //   for (let i = 0; i < this.users.length; i++) {
+    //     const user = this.users[i];
+    //     const fromSelf = socket.userID === from;
+    //     if (user.userID === (fromSelf ? to : from)) {
+    //       user.messages = user.messages.filter((item, index) => {
+    //         if (index != msgindx) {
+    //           return item;
+    //         }
+    //       });
+    //       if (user !== this.selectedUser) {
+    //         user.hasNewMessages = true;
+    //       }
+    //       break;
+    //     }
+    //   }
+    // });
   },
   destroyed() {
     socket.off("connect");
@@ -123,6 +212,7 @@ export default {
     socket.off("user connected");
     socket.off("user disconnected");
     socket.off("private message");
+    // socket.off("delete message");
   },
 };
 </script>
@@ -134,21 +224,18 @@ export default {
           <div class="container row g-3">
             <div class="col-md-3" id="header-left-panel">
               <h3>Contacts</h3>
-            </div>
-            <div class="col-md-9" id="header-main-panel">
-              <h3>sabil</h3>
-            </div>
-            <div class="col-md-3" id="left-panel">
-              <user v-for="user in users" :key="user.userID" :user="user" :selected="selectedUser === user"
-                @select="onSelectUser(user)" />
+              <hr>
+              <div>
+                <user v-for="user in users" :key="user.userID" :user="user" :selected="selectedUser === user"
+                  @select="onSelectUser(user)" />
+              </div>
             </div>
             <div class="col-md-9" id="main-panel">
-              <message-panel v-if="selectedUser" :user="selectedUser" @input="onMessage" />
+              <message-panel v-if="selectedUser" :user="selectedUser" @input="onMessage" @deleteChat="deleteChat"
+                @resendChat="resendChat" />
             </div>
-            <div class="col-md-12" id="logout-panel">
-              <a href="#">
-                <button type="button" class="btn btn-outline-danger">LOG OUT</button>
-              </a>
+            <div class="col-md-3" id="logout-panel">
+              <button class="btn btn-outline-danger" @click="logOut">LOG OUT</button>
             </div>
           </div>
         </div>
@@ -158,6 +245,11 @@ export default {
 
 </template>
 <style scoped>
+h3 {
+  text-align: center;
+  font-weight: bold;
+}
+
 .container-fluid {
   margin-top: 20px;
   width: 70%;
@@ -169,34 +261,17 @@ export default {
 
 #header-left-panel {
   padding-top: 25px;
-  text-align: center;
+  /* text-align: center; */
   background-color: rgba(243, 243, 243, 0.982);
-  height: 80px;
+  height: 607px;
   border-radius: 10px 10px 0 0;
-}
-
-#header-main-panel {
-  height: 80px;
-  background-color: rgba(243, 243, 243, 0.982);
-  padding-top: 25px;
-  text-align: center;
-  border-left: 20px white solid;
-
-}
-
-#left-panel {
-  margin-top: 0px;
-  height: 527px;
-  background-color: rgba(243, 243, 243, 0.982);
-  border-top: 3px solid lightgrey;
-  border-radius: 0 0 10px 10px;
 }
 
 #logout-panel {
   margin-top: 2px;
   padding-top: 0;
-  padding-left: 75px;
-  /* text-align: center; */
+  /* padding-left: 75px; */
+  text-align: center;
   border: none;
 }
 </style>

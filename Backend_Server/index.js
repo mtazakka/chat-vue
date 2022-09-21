@@ -19,7 +19,7 @@ const randomId = () => crypto.randomBytes(8).toString("hex");
 const { InMemorySessionStore } = require("./sessionStore");
 const sessionStore = new InMemorySessionStore();
 
-const { InMemoryMessageStore } = require("./messageStore").default;
+const { InMemoryMessageStore } = require("./messageStore");
 const messageStore = new InMemoryMessageStore();
 
 io.use((socket, next) => {

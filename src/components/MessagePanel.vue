@@ -1,8 +1,14 @@
-<script>
+<!-- <script>
+import { useStore } from "../stores/piniaChat.js"
 import StatusIcon from "./StatusIcon.vue";
 
 export default {
   name: "MessagePanel",
+  emits: ["input", "delete", "resend"],
+  setup() {
+    const Chat = useStore();
+    return { Chat };
+  },
   components: {
     StatusIcon,
   },
@@ -12,6 +18,7 @@ export default {
   data() {
     return {
       input: "",
+      bdelete: false,
     };
   },
   methods: {
@@ -19,6 +26,64 @@ export default {
       this.$emit("input", this.input);
       this.input = "";
     },
+    deleteChat(message, index) {
+      this.$emit("delete", message, index);
+    },
+    resendChat(message) {
+      this.$emit("resend", message)
+    },
+    displaySender(message, index) {
+      return (
+        index === 0 ||
+        this.user.messages[index - 1].fromSelf !==
+        this.user.messages[index].fromSelf
+      );
+    },
+  },
+  computed: {
+    isValid() {
+      return this.input.length > 0;
+    },
+  },
+};
+</script> -->
+<script>
+import { useChatStore } from "../stores/chat";
+import StatusIcon from "./StatusIcon.vue";
+
+export default {
+  name: "MessagePanel",
+  emits: ["input", "deleteChat", "resendChat"],
+  setup() {
+    const Chat = useChatStore();
+    return { Chat };
+  },
+  components: {
+    StatusIcon,
+  },
+  props: {
+    user: Object,
+  },
+  data() {
+    return {
+      input: "",
+      bdelete: false,
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.$emit("input", this.input);
+      this.input = "";
+    },
+
+    deleteCHAT(message, index) {
+      this.$emit("deleteChat", message, index);
+    },
+
+    resendCHAT(message) {
+      this.$emit("resendChat", message);
+    },
+
     displaySender(message, index) {
       return (
         index === 0 ||
@@ -36,13 +101,13 @@ export default {
 </script>
 <template>
   <div class="card mb-4">
+    <h3 class="header">
+      <status-icon :connected="user.connected" />{{ user.username }}
+    </h3>
     <div class="container row g-3 main-panel">
-      <!-- <div>
-        <status-icon :connected="user.connected" />{{ user.username }}
-      </div> -->
       <div>
         <ul class="messages">
-          <li v-for="(message, index) in user.messages" :key="index" class="message">
+          <li v-for="(message, index) in user.messages" :key="index" :class="message">
             <div v-if="displaySender(message, index)" class="sender">
               {{ message.fromSelf ? "(yourself)" : user.username }}
             </div>
@@ -52,55 +117,25 @@ export default {
       </div>
       <div>
         <form @submit.prevent="onSubmit" class="col-md-12">
-          <textarea v-model="submit" placeholder="Write a message..." class="input" />
+          <textarea v-model="input" placeholder="Write a message..." class="input" @keypress.enter="onSubmit" />
           <button :disabled="!isValid" class="send-button btn btn-primary">
             <i class="fa-regular fa-paper-plane"></i>
           </button>
         </form>
       </div>
     </div>
-    <!-- <table class="main-panel">
-      <thead>
-        <tr>
-          <th>
-            <status-icon :connected="user.connected" />{{ user.username }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr id="message-panel">
-          <td>
-            <ul class="messages">
-              <li v-for="(message, index) in user.messages" :key="index" class="message">
-                <div v-if="displaySender(message, index)" class="sender">
-                  {{ message.fromSelf ? "(yourself)" : user.username }}
-                </div>
-                {{ message.content }}
-              </li>
-            </ul>
-          </td>
-        </tr>
-        <br>
-        <tr>
-          <td id="write-panel">
-            <form @submit.prevent="onSubmit" class="col-md-12">
-              <textarea v-model="submit" placeholder="Write a message..." class="input" />
-              <button :disabled="!isValid" class="send-button btn btn-primary">
-                <i class="fa-regular fa-paper-plane"></i>
-              </button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
   </div>
 </template>
 <style scoped>
-/* .header {
-  line-height: 40px;
-  padding: 10px 20px;
-  border-bottom: 1px solid #dddddd;
-} */
+.header {
+  line-height: 80px;
+  background-color: rgba(243, 243, 243, 0.982);
+  margin-left: 10px;
+  margin-right: -10px;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: bold;
+}
 
 .card {
   border: none;
@@ -128,6 +163,11 @@ export default {
 .sender {
   font-weight: bold;
   margin-top: 5px;
+  text-align: left;
+}
+
+.receiver {
+  text-align: right;
 }
 
 

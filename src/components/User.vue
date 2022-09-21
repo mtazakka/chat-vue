@@ -1,9 +1,15 @@
 <script>
 import StatusIcon from "./StatusIcon.vue";
+
 export default {
-  name: "User",
+  name: "ComponentUser",
   components: { StatusIcon },
-  // emits: ["select"],
+  emits: ["select"],
+  data() {
+    return {
+      count: 0,
+    };
+  },
   props: {
     user: Object,
     selected: Boolean,
@@ -20,7 +26,6 @@ export default {
   },
 };
 </script>
-
 <template>
   <div class="user" @click="onClick" :class="{ selected: selected }">
     <div class="description">
@@ -38,10 +43,16 @@ export default {
 <style scoped>
 .selected {
   background-color: #1164a3;
+  margin-left: -8px;
+  margin-right: -8px;
+  color: white;
+  padding: 10px;
 }
 
 .user {
   padding: 10px;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 
 .description {
@@ -50,6 +61,8 @@ export default {
 
 .status {
   color: #92959e;
+  padding-left: 10px;
+  margin-top: -5px;
 }
 
 .new-messages {
