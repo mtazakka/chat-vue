@@ -12,7 +12,6 @@ export const useChatStore = defineStore({
   actions: {
     addChat(id, content, date, to) {
       try {
-        // axios
         socket.emit("private message", {
           id,
           content,
@@ -31,15 +30,15 @@ export const useChatStore = defineStore({
       }
     },
 
-    removeChat(msgdelid, to, msgindx) {
-      socket.emit("delete message", { msgdelid, to, msgindx });
+    removeChat(idMessage, to, noMessage) {
+      socket.emit("delete message", { idMessage, to, noMessage });
       this.rawItems = this.rawItems.filter((item) => {
-        if (item.id != msgdelid) {
+        if (item.id != idMessage) {
           console.log("item", item);
           return item;
         }
       });
-      // this.rawItems = this.rawItems.filter(item => item.id === id)
+
     },
 
     updateItem(todo) {

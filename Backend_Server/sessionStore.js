@@ -1,23 +1,23 @@
 const Session = require('./models/session');
 
-// var load = new Map();
-// Session.find((err, result) => {
-//   if (err) throw err;
-//   if (result.length > 0) {
-//     for (let i = 0; i < result.length; i++) {
-//       var sesiID = result[i].sessionID
-//       const usrID = result[i].userID
-//       const usrname = result[i].username
-//       const konek = result[i].connected
+var load = new Map();
+Session.find((err, result) => {
+  if (err) throw err;
+  if (result.length > 0) {
+    for (let i = 0; i < result.length; i++) {
+      var sesiID = result[i].sessionID
+      const usrID = result[i].userID
+      const usrname = result[i].username
+      const konek = result[i].connected
 
-//     //this.messages = result;
-//     var data = {userID: usrID, username: usrname, connected: konek}
+    //this.messages = result;
+    var data = {userID: usrID, username: usrname, connected: konek}
     
-//     load.set(sesiID, data)
-//     }
-//     //console.log('load', this.sessions)
-//   }
-// });
+    load.set(sesiID, data)
+    }
+    //console.log('load', this.sessions)
+  }
+});
 /* abstract */ 
 class SessionStore {
   findSession(id) {}

@@ -103,15 +103,15 @@ io.on("connection", (socket) => {
     messageStore.saveMessage(message);
   });
 
-  socket.on("delete message", ({ msgdelid, to, msgindx }) => {
+  socket.on("delete message", ({ idMessage, to, noMessage }) => {
     const message = {
-      msgdelid,
-      msgindx,
+      idMessage,
+      noMessage,
       from: socket.userID,
       to,
     };
     socket.to(to).to(socket.userID).emit("delete message", message);
-    messageStore.deleteMessage(msgdelid);
+    messageStore.deleteMessage(idMessage);
   });
 
   // notify users upon disconnection

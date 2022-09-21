@@ -53,6 +53,7 @@ export default {
   padding: 10px;
   margin-left: -8px;
   margin-right: -8px;
+
 }
 
 .description {

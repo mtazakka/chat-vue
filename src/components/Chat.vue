@@ -1,14 +1,14 @@
 <script>
-import { useStore } from "../stores/piniaChat";
+import { useChatStore } from "../stores/chat";
 import socket from "../socket";
 import User from "./User.vue";
 import MessagePanel from "./MessagePanel.vue";
 
 export default {
-  name: "ComponentChat",
+  name: "ComponentsChat",
   emits: ["logOut"],
   setup() {
-    const Chat = useStore();
+    const Chat = useChatStore();
     return { Chat };
   },
   components: { User, MessagePanel },
@@ -45,6 +45,7 @@ export default {
         }
       }
     },
+
     onSelectUser(user) {
       this.selectedUser = user;
       user.hasNewMessages = false;
@@ -61,49 +62,47 @@ export default {
       });
       this.$emit("logOut");
     },
-    // deleteChat(messageDel, msgindx) {
-    //   console.log("onMesag", messageDel);
-    //   const to = this.selectedUser.userID;
-    //   const msgdelid = messageDel.id;
-    //   if (this.selectedUser) {
-    //     this.Chat.removeChat(msgdelid, to, msgindx);
-    //     this.selectedUser.messages = this.selectedUser.messages.filter(
-    //       (item) => {
-    //         if (item.id != msgdelid) {
-    //           return item;
-    //         }
-    //       }
-    //     );
-    //   }
-    // },
+    deleteChat(messageDel, noMessage) {
+      console.log("onMesag", messageDel);
+      const to = this.selectedUser.userID;
+      const idMessage = messageDel.id;
+      if (this.selectedUser) {
+        this.Chat.removeChat(idMessage, to, noMessage);
+        this.selectedUser.messages = this.selectedUser.messages.filter(
+          (item) => {
+            if (item.id != idMessage) {
+              return item;
+            }
+          }
+        );
+      }
+    },
 
-    // resendChat(msgResend) {
-    //   console.log("resendChat", msgResend);
-    //   const id = msgResend.id;
-    //   const content = msgResend.content;
-    //   const date = msgResend.date;
-    //   const to = this.selectedUser.userID;
-    //   if (this.selectedUser) {
-    //     if (socket.connected) {
-    //       console.log("ada koneksi resend");
-    //       this.Chat.addChat(id, content, date, to);
-    //       this.selectedUser.messages.map((item) => {
-    //         if (item.id == id) {
-    //           item.sent = true;
-    //         }
-    //         return item;
-    //       });
-    //     } else {
-    //       console.log("tidak ada koneksi resend");
-    //       this.selectedUser.messages.map((item) => {
-    //         if (item.id == id) {
-    //           item.sent = false;
-    //         }
-    //         return item;
-    //       });
-    //     }
-    //   }
-    // },
+    resendChat(msgResend) {
+      console.log("resendChat", msgResend);
+      const id = msgResend.id;
+      const content = msgResend.content;
+      const date = msgResend.date;
+      const to = this.selectedUser.userID;
+      if (this.selectedUser) {
+        if (socket.connected) {
+          this.Chat.addChat(id, content, date, to);
+          this.selectedUser.messages.map((item) => {
+            if (item.id == id) {
+              item.sent = true;
+            }
+            return item;
+          });
+        } else {
+          this.selectedUser.messages.map((item) => {
+            if (item.id == id) {
+              item.sent = false;
+            }
+            return item;
+          });
+        }
+      }
+    },
   },
 
   created() {
@@ -187,35 +186,36 @@ export default {
       }
     });
 
-    // socket.on("delete message", ({ to, from, msgindx }) => {
-    //   for (let i = 0; i < this.users.length; i++) {
-    //     const user = this.users[i];
-    //     const fromSelf = socket.userID === from;
-    //     if (user.userID === (fromSelf ? to : from)) {
-    //       user.messages = user.messages.filter((item, index) => {
-    //         if (index != msgindx) {
-    //           return item;
-    //         }
-    //       });
-    //       if (user !== this.selectedUser) {
-    //         user.hasNewMessages = true;
-    //       }
-    //       break;
-    //     }
-    //   }
-    // });
+    socket.on("delete message", ({ to, from, noMessage }) => {
+      for (let i = 0; i < this.users.length; i++) {
+        const user = this.users[i];
+        const fromSelf = socket.userID === from;
+        if (user.userID === (fromSelf ? to : from)) {
+          user.messages = user.messages.filter((item, index) => {
+            if (index != noMessage) {
+              return item;
+            }
+          });
+          if (user !== this.selectedUser) {
+            user.hasNewMessages = true;
+          }
+          break;
+        }
+      }
+    });
   },
-  destroyed() {
+  unmounted() {
     socket.off("connect");
     socket.off("disconnect");
     socket.off("users");
     socket.off("user connected");
     socket.off("user disconnected");
     socket.off("private message");
-    // socket.off("delete message");
+    socket.off("delete message");
   },
 };
 </script>
+
 <template>
   <div class="container-fluid px-4 py-5 px-md-5 text-center text-lg-start my-8">
     <div class="row gx-lg-5 align-items-center mb-5 justify-content-center">
@@ -264,6 +264,7 @@ h3 {
   /* text-align: center; */
   background-color: rgba(243, 243, 243, 0.982);
   height: 607px;
+  overflow-y: scroll;
   border-radius: 10px 10px 0 0;
 }
 

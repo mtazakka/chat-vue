@@ -52,7 +52,7 @@ import { useChatStore } from "../stores/chat";
 import StatusIcon from "./StatusIcon.vue";
 
 export default {
-  name: "MessagePanel",
+  name: "ComponentsMessagePanel",
   emits: ["input", "deleteChat", "resendChat"],
   setup() {
     const Chat = useChatStore();
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       input: "",
-      bdelete: false,
+      failed: false,
     };
   },
   methods: {
@@ -76,11 +76,11 @@ export default {
       this.input = "";
     },
 
-    deleteCHAT(message, index) {
+    deleteChat(message, index) {
       this.$emit("deleteChat", message, index);
     },
 
-    resendCHAT(message) {
+    resend(message) {
       this.$emit("resendChat", message);
     },
 
@@ -107,17 +107,33 @@ export default {
     <div class="container row g-3 main-panel">
       <div>
         <ul class="messages">
-          <li v-for="(message, index) in user.messages" :key="index" :class="message">
-            <div v-if="displaySender(message, index)" class="sender">
-              {{ message.fromSelf ? "(yourself)" : user.username }}
+          <li v-for="(message, index) in user.messages" :key="index" :class="message.fromSelf ? 'sender' : 'receiver'">
+            <div v-if="message.fromSelf" class="sender">
+              <div class="message">
+                <button class="btn btn-danger btn-sm" title="delete"
+                  @click="alert(deleteChat(message, index))"></button>
+                {{ message.fromSelf ? "(me)" : user.username }}
+                <sup>{{ message.date }}</sup>
+              </div>
+              <br>
+              {{ message.content }}
             </div>
-            {{ message.content }}
+
+            <div v-else class="receiver">
+              <div class="message">
+                <sup>{{ message.date }}</sup>
+                {{ message.fromSelf ? "(me)" : user.username }}
+              </div>
+              <br>
+              {{ message.content }}
+            </div>
           </li>
         </ul>
       </div>
       <div>
         <form @submit.prevent="onSubmit" class="col-md-12">
-          <textarea v-model="input" placeholder="Write a message..." class="input" @keypress.enter="onSubmit" />
+          <input type="text" v-model="input" placeholder="Write a message..." class="input"
+            @keypress.enter="onSubmit" />
           <button :disabled="!isValid" class="send-button btn btn-primary">
             <i class="fa-regular fa-paper-plane"></i>
           </button>
@@ -158,26 +174,40 @@ export default {
 
 .message {
   list-style: none;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: -22px;
 }
 
 .sender {
-  font-weight: bold;
+  /* font-weight: bold; */
   margin-top: 5px;
   text-align: left;
+  list-style: none;
+  width: max-content;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 .receiver {
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 5px;
   text-align: right;
+  list-style: none;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 
 .input {
   width: 85%;
-  resize: none;
-  padding-top: 12px;
+  max-height: 40px;
+  /* padding-top: 8px; */
   padding-left: 20px;
   margin-left: 20px;
-  line-height: 1;
+  margin-bottom: 20px;
+  line-height: 3;
   border-radius: 25px;
   border: 1px solid lightgray;
 }
