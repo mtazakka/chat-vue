@@ -14,7 +14,6 @@ class InMemoryMessageStore extends MessageStore {
 
   saveMessage(message) {
     this.messages.push(message);
-    console.log('add', message)
   }
 
   deleteMessage(id) {

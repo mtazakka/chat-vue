@@ -9,5 +9,6 @@ router
   .post('/', chat.onCreateChat)
   .get('/:id', chat.onGetChatById)
   .delete('/:id', chat.onDeleteChatById)
+  .delete('/', chat.onDeleteChat)
 
 export default router;

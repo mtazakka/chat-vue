@@ -87,5 +87,13 @@ chatSchema.statics.deleteByChatById = async function (id) {
     throw error;
   }
 }
+chatSchema.statics.deleteChat= async function () {
+  try {
+    const result = await this.remove();
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export default mongoose.model("Chat", chatSchema);

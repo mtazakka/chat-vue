@@ -68,9 +68,9 @@ export default {
               </div>
               <br>
               {{ message.content }}
-              <button v-if="!message.sent && message.fromSelf" type="button" class="btn btn-outline-warning btn-sm"
-                id="resend" @click="resend(message)">&#x21bb</button>
-              <div v-if="message.fromSelf && !message.sent">
+              <div>
+                <button v-if="!message.sent && message.fromSelf" type="button" class="btn btn-outline-warning btn-sm"
+                  id="resend" @click="resend(message)">&#x21bb</button>
               </div>
             </div>
 
@@ -87,8 +87,7 @@ export default {
       </div>
       <div>
         <form @submit.prevent="onSubmit" class="col-md-12">
-          <input type="text" v-model="input" placeholder="Write a message..." class="input"
-            @keypress.enter="onSubmit" />
+          <input type="text" v-model="input" placeholder="Write a message..." class="input" />
           <button :disabled="!isValid" class="send-button btn btn-primary">
             <i class="fa-regular fa-paper-plane"></i>
           </button>

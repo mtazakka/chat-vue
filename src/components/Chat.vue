@@ -63,7 +63,6 @@ export default {
       this.$emit("logOut");
     },
     deleteChat(messageDel, noMessage) {
-      console.log("onMesag", messageDel);
       const to = this.selectedUser.userID;
       const idMessage = messageDel.id;
       if (this.selectedUser) {
@@ -79,7 +78,6 @@ export default {
     },
 
     resendChat(msgResend) {
-      console.log("resendChat", msgResend);
       const id = msgResend.id;
       const content = msgResend.content;
       const date = msgResend.date;

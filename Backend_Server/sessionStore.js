@@ -15,7 +15,6 @@ Session.find((err, result) => {
     
     load.set(sesiID, data)
     }
-    //console.log('load', this.sessions)
   }
 });
 /* abstract */ 

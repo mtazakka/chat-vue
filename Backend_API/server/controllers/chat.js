@@ -50,4 +50,15 @@ export default {
       return res.status(500).json({ success: false, error: error })
     }
   },
+    onDeleteChat: async (req, res) => {
+    try {
+      const chat = await ChatModel.deleteChat();
+      return res.status(200).json({ 
+        success: true, 
+        message: `Deleted a count of ${chat.deletedCount} chat.` 
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, error: error })
+    }
+  },
 }

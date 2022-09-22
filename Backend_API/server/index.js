@@ -11,8 +11,6 @@ import WebSockets from "./utils/WebSockets.js";
 // routes
 import indexRouter from "./routes/index.js";
 import userRouter from "./routes/user.js";
-import chatRoomRouter from "./routes/chatRoom.js";
-import deleteRouter from "./routes/delete.js";
 import chatRouter from "./routes/chat.js";
 // middlewares
 import { decode } from './middlewares/jwt.js'
@@ -20,7 +18,7 @@ import { decode } from './middlewares/jwt.js'
 const app = express();
 
 /** Get port from environment and store in Express. */
-const port = process.env.PORT || "3000";
+const port = process.env.PORT || "3001";
 app.set("port", port);
 
 app.use(logger("dev"));
@@ -29,10 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
-app.use("/room", chatRoomRouter);
 app.use("/chat", chatRouter);
-app.use("/delete", deleteRouter);
-
 /** catch 404 and forward to error handler */
 app.use('*', (req, res) => {
   return res.status(404).json({

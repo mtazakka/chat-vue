@@ -25,8 +25,8 @@ export const useChatStore = defineStore({
           fromSelf: true,
           sent: true,
         });
-      } catch (error) {
-        console.log("lagi error");
+      } catch (err) {
+        console.log(err);
       }
     },
 
@@ -34,7 +34,6 @@ export const useChatStore = defineStore({
       socket.emit("delete message", { idMessage, to, noMessage });
       this.rawItems = this.rawItems.filter((item) => {
         if (item.id != idMessage) {
-          console.log("item", item);
           return item;
         }
       });

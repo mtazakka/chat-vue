@@ -50,4 +50,16 @@ export default {
       return res.status(500).json({ success: false, error: error })
     }
   },
+    onDeleteUser: async (req, res) => {
+    try {
+      const user = await UserModel.deleteUser();
+      return res.status(200).json({ 
+        success: true, 
+        message: `Deleted a count of ${user.deletedCount} user.` 
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, error: error })
+    }
+  },
+  
 }
