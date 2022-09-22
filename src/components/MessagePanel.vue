@@ -134,9 +134,6 @@ export default {
 }
 
 .sender {
-  /* font-weight: bold; */
-  display: flex;
-  margin-left: auto;
   margin-top: 5px;
   text-align: left;
   list-style: none;
@@ -146,7 +143,6 @@ export default {
 }
 
 .receiver {
-  margin-left: auto;
   margin-right: 0;
   margin-top: 5px;
   text-align: right;
