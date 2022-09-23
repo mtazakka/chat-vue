@@ -12,7 +12,7 @@ npm install
 ### RUN CLIENT
 
 ```sh
-npm run dev
+npm start
 ```
 
 ### RUN SERVER
