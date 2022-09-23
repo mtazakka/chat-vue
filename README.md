@@ -15,16 +15,16 @@ npm install
 npm run dev
 ```
 
-### if RUN SERVER ONLY
+### RUN SERVER
 
 ```sh
 cd Backend_Server
 npm Start
 ```
-
+<!-- 
 ### or RUNNING SERVER API
 
 ```sh
 cd Backend_API
 npm Start
-```
+``` -->
