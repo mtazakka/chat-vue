@@ -18,13 +18,13 @@ npm run dev
 ### if RUN SERVER ONLY
 
 ```sh
-CD Backend_Server
+cd Backend_Server
 npm Start
 ```
 
 ### or RUNNING SERVER API
 
 ```sh
-CD Backend_API
+cd Backend_API
 npm Start
 ```
