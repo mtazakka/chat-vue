@@ -3,14 +3,14 @@ const httpServer = require("http").createServer(app);
 const mongoose = require('mongoose');
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "http://18.143.129.18:5173",
+    origin: "http://18.141.111.48:5173",
   },
 });
 
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect('mongodb://localhost:27017/chatdb');
+  await mongoose.connect('mongodb://localhost:27017/chatdb');
 }
 
 const crypto = require("crypto");
@@ -134,5 +134,5 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 3000;
 
 httpServer.listen(3000, () =>
-  console.log(`server listening at http://18.143.129.18:3000`)
+  console.log(`server listening at http://18.141.111.48:3000`)
 );
